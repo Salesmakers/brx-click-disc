@@ -35,6 +35,7 @@
 	 */
 	define( 'BRX_CLICK_DISC_VERSION', '1.0.0' );
 	define( 'BRX_URL',  plugin_dir_url(__FILE__) );
+	define( 'BRX_PATH',  plugin_dir_path(__FILE__) );
 
 	/**
 	 * The code that runs during plugin activation.
