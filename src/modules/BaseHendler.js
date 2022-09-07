@@ -33,9 +33,7 @@ class BaseHendler {
             };
 
             axios.post(brX.ajaxUrl, Qs.stringify(ourInputForm)).then((response) => {
-                console.log(response.data);
-                // window.location.reload();
-
+                window.location.reload();
             });
 
         } catch (e) {
