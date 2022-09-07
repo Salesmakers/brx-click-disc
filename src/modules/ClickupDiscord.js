@@ -1,9 +1,15 @@
 import axios from "axios";
+import Qs from 'qs';
 
 class ClickupDiscord {
 
-    constructor(CDBase) {
-        this.base = CDBase;
+    constructor() {
+        if(! brX.base['cklickupDiscord']){
+            return
+        }
+        this.base = brX.base['cklickupDiscord'];
+        axios.defaults.headers.common['X-Auth-Token'] =  this.base.token;
+        this.initializeForm();
         this.getBtn = document.querySelector('.brx-get');
         this.postBtn = document.querySelector('.brx-post');
         this.updateBtn = document.querySelector('.brx-update');
@@ -14,7 +20,8 @@ class ClickupDiscord {
         this.errorBtn = document.querySelector('.brx-error');
         this.token = this.oAuth2autentication();
         this.placeHolder = document.querySelector('.brx-placeholder');
-        this.prepend ='';
+        this.prepend = '';
+
         this.events();
     }
 
@@ -30,72 +37,140 @@ class ClickupDiscord {
         this.placeHolder.addEventListener('input', this.setPlaceHolder.bind(this));
     }
 
-    setPlaceHolder(e){
+    setPlaceHolder(e) {
         e.preventDefault();
-        if(e.target.value){
+        if (e.target.value) {
             this.prepend = e.target.value;
         }
         console.log(this.prepend);
     }
 
     async oAuth2autentication() {
-        return axios.create({
-            baseURL: this.base.url,
+        // return axios.create({
+        //     baseURL: this.base.url,
+        //     headers: {
+        //         'content-type': 'multipart/form-data',
+        //         Authorization: `Bearer ${this.base.token}`
+        //     },
+        // });
+
+        return {
             headers: {
-                'content-type': 'multipart/form-data',
-                Authorization: `Bearer ${this.base.token}`
-            },
-        });
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    Authorization: `Bearer ${this.base.token}`
+                }
+            }
+        };
     }
 
-    getData(e){
+    initializeForm() {
+
+        document.getElementById('newConApp').insertAdjacentHTML('beforebegin', `
+            <div class="text-center form">
+                <div class="activation-btns ">
+                    <h1 class="display-4 text-center mb-3">Clikup to Discord API</h1>
+                    <button id="brx-get" class="btn  brx-get btn-primary my-3">GET</button>
+                    <button id="brx-post" class="btn  brx-post btn-info">POST</button>
+                    <button id="brx-update" class="btn  brx-update btn-warning">PATCH</button>
+                    <button id="brx-delete" class="btn  brx-delete btn-danger">DELETE</button>
+                    <button id="brx-sim" class="btn  brx-sim btn-secondary">Sim Requests</button>
+                    <button id="brx-headers" class="btn  brx-headers btn-secondary">Custom Headers</button>
+                    <button id="brx-transform" class="btn brx-transform btn-secondary">Transform</button>
+                    <button id="brx-error" class="btn brx-error btn-secondary">Error Handling</button>
+                    <button id="brx-cancel" class="btn brx-cancel btn-secondary">Cancel</button>
+                </div>
+
+                <div class="input-group col-12">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+                    </div>
+                    <input type="text" aria-describedby="basic-addon3" value="" id="basic-url"
+                           class="brx-placeholder form-control" placeholder="JSON Placeholder.."/>
+
+                </div>
+
+                <div class="input-group col-5 mt-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Body settings</span>
+                    </div>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
+
+            </div>
+            <hr/>
+
+            <div id="result"></div>
+        </div>
+           `);
+
+    }
+    getData(e) {
         e.preventDefault();
 
-        console.log(this.base)
-        // axios.get({
-        //     method:'get',
-        //     url: this.base.url
-        // }).then(res=> console.log(res))
-        //     .catch(err=> alert(err));
+        // var data = '';
+        //
+        // var config = {
+        //     method: 'get',
+        //     url: 'https://api.clickup.com/api/v2/team',
+        //     headers: {
+        //         'Authorization': 'Bearer 18300847_fc82f2dea68c3c2ce9db850419cd46dfdff388dc'
+        //     },
+        //     data : data
+        // };
+        //
+        // axios(config)
+        //     .then(function (response) {
+        //         console.log(JSON.stringify(response.data));
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
+
+        axios.get(
+                this.base.url+this.prepend,
+                // this.token
+            ).then(res => this.showToFront(res))
+            .catch(err => alert(err));
     }
 
-    addData(e){
+    addData(e) {
         e.preventDefault();
         console.log('Add Request');
     }
 
-    updateData(e){
+    updateData(e) {
         e.preventDefault();
         console.log('Upp Request');
     }
 
-    removeData(e){
+    removeData(e) {
         e.preventDefault();
         console.log('Rem  Request');
     }
 
-    getGeneralData(e){
+    getGeneralData(e) {
         e.preventDefault();
-        console.log('Get General Request');
+        console.log(brX.base);
     }
 
-    customHeaders(e){
+    customHeaders(e) {
         e.preventDefault();
         console.log('Custom Request');
     }
 
-    transformResponse(e){
+    transformResponse(e) {
         e.preventDefault();
         console.log(' Request');
     }
 
-    errorHandling(e){
+    errorHandling(e) {
         e.preventDefault(e);
         console.log(' Request');
     }
 
-    showOutput(res) {
-        document.getElementById('res').innerHTML = `
+    showToFront(res) {
+        document.getElementById('result').innerHTML = `
   <div class="card card-body mb-4">
     <h5>Status: ${res.status}</h5>
   </div>
@@ -125,6 +200,7 @@ class ClickupDiscord {
   </div>
 `;
     }
+
 //     var myHeaders = new Headers();
 //     myHeaders.append("Authorization", `Bearer ${clickupDiscordAuth}`);
 //

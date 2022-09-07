@@ -1,24 +1,60 @@
 <?php
+	if ( ! defined( 'WPINC' ) ) {
+		die;
+	}
+
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		wp_safe_redirect( home_url() );
+	}
+
 	get_header();
 ?>
-<div class="container-fluid full-width-container ">
-	<div class="text-center">
-		<h1 class="display-4 text-center mb-3">Clikup to Discord API</h1>
-		<button id="brx-get" class="btn  brx-get btn-primary my-3" >GET</button>
-		<button id="brx-post" class="btn  brx-post btn-info" >POST</button>
-		<button id="brx-update" class="btn  brx-update btn-warning" >PUT/PATCH</button>
-		<button id="brx-delete" class="btn  brx-delete btn-danger" >DELETE</button>
-		<button id="brx-sim" class="btn  brx-sim btn-secondary" >Sim Requests</button>
-		<button id="brx-headers" class="btn  brx-headers btn-secondary" >Custom Headers</button>
-		<button id="brx-transform" class="btn brx-transform btn-secondary">Transform</button>
-		<button id="brx-error" class="btn brx-error btn-secondary">Error Handling</button>
-		<button id="brx-cancel" class="btn brx-cancel btn-secondary">Cancel</button>
-        <label>
-            <input type="text" value="" class="brx-placeholder" placeholder="JSON Placeholder.." />
-        </label>
+    <div class=" container container-fluid full-width-container vh-100">
+        <div id="connetion-display">
+
+
+        <div class="text-center form pt-5" >
+
+
+            <button id="newConApp" type="button" class="btn btn-secondary btn-lg pl-5 pr-5" data-toggle="modal" data-target="#addNewConnection">
+                +
+            </button>
+            <div class="modal fade" id="addNewConnection" tabindex="-1" role="dialog"
+                 aria-labelledby="addNewConnectionTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addNewConnectionTitle">Add new API pipeline</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="newBrxInp"  name="newBrxInp" method="POST" action="">
+                                <div class="form-group row">
+                                    <label for="newBrxApiName" class="col-sm-2 col-form-label">Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="newBrxApiName" placeholder="data">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="newBrxUrl" class="col-sm-2 col-form-label">Url</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="newBrxUrl" placeholder="https://...">
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" type="button" id="addField">Add Field</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" form="newBrxInp">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-	<hr />
-	<div id="result"></div>
-</div>
 <?php
-    get_footer();
+	get_footer();

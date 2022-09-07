@@ -42,6 +42,7 @@
 		public function run() {
 
 			// todo initialize automated check and integration of the index
+
 //			if( exec('grep '.escapeshellarg($_GET[$connection]).$this->brxClickSrc)) {
 //				 do stuff
 //			}
@@ -53,6 +54,8 @@
 			add_action( 'wp_enqueue_scripts', array( $this, 'initialize_scripts' ) );
 			add_filter( 'theme_page_templates', array( $this, 'brx_front_template' ), 10, 3 );
 			add_filter( 'template_include', array( $this, 'select_brx_template' ), 10, 3 );
+			add_action( 'wp_ajax_add_new_brx_base_path', array( $this, 'add_new_brx_base_path' ) );
+			add_action( 'wp_ajax_nopriv_add_new_brx_base_path', array( $this, 'add_new_brx_base_path' ) );
 		}
 
 		private function get_connections(): array {
@@ -64,13 +67,23 @@
 		}
 
 		public function initialize_scripts(): void {
+			wp_enqueue_script( 'bootstrap-bundle',
+				'https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js',
+				array( 'jquery' ),
+				'1.0.0',
+				true );
+			wp_enqueue_style( 'bootstrap-css',
+				'https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css',
+				'',
+				'1.0.0',
+				'all' );
+//			wp_enqueue_style( 'brxClickStyle', BRX_PATH . 'assets/brx-click-tyle.css'  );
 			wp_enqueue_script( 'brxClickDisc', $this->brxClickIni, array( 'jquery' ), '1.0.0', true );
 
 			wp_localize_script( 'brxClickDisc', 'brX', array(
 				'base'    => $this->get_base_paths(),
 				'ajaxUrl' => admin_url( "admin-ajax.php" ),
 			) );
-
 
 		}
 
@@ -96,30 +109,54 @@
 			if ( file_exists( $breex_template ) ) {
 				return $breex_template;
 			}
-
 			return $template;
-
 		}
-
-		//todo save in separate files by name: from creation panel
-		//todo creation panel on +
 
 		private function get_base_paths() {
 
-//			$data = array(
-//				'cklickupDiscord' => array(
-//			    'url'=> '',
-//					'client_id'     => '',
-//					'client_secret' => '',
-//					'code'          => '',
-//					'token'         => '',
-//				),
-//			);
-//			update_option('brx_base' , $data);
-
-			$data = get_option( 'brx_base' );
+			$data = get_option( 'brx_base', false );
+			if ( ! $data ) {
+				return array();
+			}
 
 			return $data;
+		}
+
+		public function add_new_brx_base_path() {
+
+			$data = get_option( 'brx_base', false );
+
+			$newUrl = esc_url( $_POST['url'] );
+			$name   = sanitize_text_field( $_POST['name'] );
+
+
+			if ( ! $data ) {
+				$data = array();
+			}
+			$values = [];
+
+			if ( isset( $_POST['values'] ) ) {
+
+				array_filter( $_POST['values'],
+					function ( $val ) use ( &$values ) {
+						$newValue                                       = explode( ':', $val );
+						$values[ sanitize_text_field( $newValue [0] ) ] = sanitize_text_field( $newValue[1] );
+					}
+				);
+			}
+			$values['name'] = ucfirst( $name );
+			$values['url']  = $newUrl;
+
+
+			$data[ $name ] = $values;
+
+			update_option( 'brx_base', $data );
+			if ( $data[ $name ] ) {
+				wp_send_json_success( json_encode( $data[ $name ] ) );
+			} else {
+				wp_send_json_error();
+			}
+			wp_die();
 		}
 
 	}
