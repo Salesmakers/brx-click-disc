@@ -109,6 +109,7 @@
 			if ( file_exists( $breex_template ) ) {
 				return $breex_template;
 			}
+
 			return $template;
 		}
 
@@ -122,6 +123,7 @@
 			return $data;
 		}
 
+//todo add additional hashing for each
 		public function add_new_brx_base_path() {
 
 			$data = get_option( 'brx_base', false );

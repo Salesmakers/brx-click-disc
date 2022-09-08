@@ -4,11 +4,12 @@ import Qs from 'qs';
 class ClickupDiscord {
 
     constructor() {
-        if(! brX.base['cklickupDiscord']){
+        if (!brX.base['cklickupDiscord']) {
             return
         }
         this.base = brX.base['cklickupDiscord'];
-        axios.defaults.headers.common['X-Auth-Token'] =  this.base.token;
+        // axios.defaults.headers.common['X-Auth-Token'] =  this.base.token;
+
         this.initializeForm();
         this.getBtn = document.querySelector('.brx-get');
         this.postBtn = document.querySelector('.brx-post');
@@ -46,6 +47,7 @@ class ClickupDiscord {
     }
 
     async oAuth2autentication() {
+
         // return axios.create({
         //     baseURL: this.base.url,
         //     headers: {
@@ -87,7 +89,6 @@ class ClickupDiscord {
                     </div>
                     <input type="text" aria-describedby="basic-addon3" value="" id="basic-url"
                            class="brx-placeholder form-control" placeholder="JSON Placeholder.."/>
-
                 </div>
 
                 <div class="input-group col-5 mt-2">
@@ -96,42 +97,40 @@ class ClickupDiscord {
                     </div>
                     <textarea class="form-control" aria-label="With textarea"></textarea>
                 </div>
-
             </div>
             <hr/>
-
             <div id="result"></div>
         </div>
            `);
-
     }
+
+
     getData(e) {
         e.preventDefault();
 
-        // var data = '';
-        //
-        // var config = {
-        //     method: 'get',
-        //     url: 'https://api.clickup.com/api/v2/team',
-        //     headers: {
-        //         'Authorization': 'Bearer 18300847_fc82f2dea68c3c2ce9db850419cd46dfdff388dc'
-        //     },
-        //     data : data
-        // };
-        //
-        // axios(config)
-        //     .then(function (response) {
-        //         console.log(JSON.stringify(response.data));
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     });
+        let data = '';
 
-        axios.get(
-                this.base.url+this.prepend,
-                // this.token
-            ).then(res => this.showToFront(res))
-            .catch(err => alert(err));
+        let config = {
+            method: 'get',
+            url: (this.base.url + this.prepend),
+            headers: {
+                'Authorization': `Bearer ${this.base.token}`,
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        axios(config)
+            .then(response =>
+                this.showToFront(response.data)
+            ).catch(function (error) {
+            console.log(error);
+        });
+        // axios.get(
+        //         this.base.url+this.prepend,
+        //         // this.token
+        //     ).then(res => this.showToFront(res))
+        //     .catch(err => alert(err));
     }
 
     addData(e) {
@@ -151,7 +150,7 @@ class ClickupDiscord {
 
     getGeneralData(e) {
         e.preventDefault();
-        console.log(brX.base);
+        console.log('GeneralRequest');
     }
 
     customHeaders(e) {
