@@ -1,5 +1,7 @@
+import FormData from 'form-data';
 import axios from "axios";
 import Qs from 'qs';
+// import fs from 'fs';
 
 class ClickupDiscord {
 
@@ -108,16 +110,13 @@ class ClickupDiscord {
     getData(e) {
         e.preventDefault();
 
-        let data = '';
-
         let config = {
             method: 'get',
             url: (this.base.url + this.prepend),
             headers: {
                 'Authorization': `Bearer ${this.base.token}`,
                 'Content-Type': 'application/json'
-            },
-            data: data
+            }
         };
 
         axios(config)
@@ -126,16 +125,38 @@ class ClickupDiscord {
             ).catch(function (error) {
             console.log(error);
         });
-        // axios.get(
-        //         this.base.url+this.prepend,
-        //         // this.token
-        //     ).then(res => this.showToFront(res))
-        //     .catch(err => alert(err));
+
+        // axios(config)
+        //     .then(function (response) {
+        //         console.log(JSON.stringify(response.data));
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
+
     }
 
     addData(e) {
         e.preventDefault();
-        console.log('Add Request');
+
+        const form = new FormData();
+
+        form.append('filename', '')
+        form.append('attachment', fs.createReadStream('./img.png'));
+
+        const headers = form.getHeaders();
+
+        headers.authorization = `Bearer ${your_api_token}`;
+
+        axios({
+            method: 'post',
+            url: (this.base.url + this.prepend),
+            data: form,
+            headers,
+        })
+            .then(() => console.log('success'))
+            .catch(() => console.log('fail'));
+
     }
 
     updateData(e) {
