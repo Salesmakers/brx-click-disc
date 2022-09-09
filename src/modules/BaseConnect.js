@@ -1,17 +1,10 @@
-import FormData from 'form-data';
 import axios from "axios";
+import FormData from "form-data";
 
+class BaseConnect {
+    constructor(element) {
 
-
-class ClickupDiscord {
-
-    constructor() {
-        if (!brX.base['cklickupDiscord']) {
-            return
-        }
-        this.base = brX.base['cklickupDiscord'];
-        axios.defaults.headers.common['X-Auth-Token'] = this.base.token;
-
+        this.base = element;
         this.initializeForm();
         this.getBtn = document.querySelector('.brx-get');
         this.postBtn = document.querySelector('.brx-post');
@@ -23,16 +16,14 @@ class ClickupDiscord {
         this.token = this.oAuth2autentication();
         this.placeHolder = document.querySelector('.brx-placeholder');
         this.prepend = '';
-
         this.events();
     }
-
     events() {
         this.getBtn.addEventListener('click', this.getData.bind(this));
         this.postBtn.addEventListener('click', this.addData.bind(this));
         this.updateBtn.addEventListener('click', this.updateData.bind(this));
         this.simBtn.addEventListener('click', this.getGeneralData.bind(this));
-        this.headersBtn.addEventListener('click', this.customHeaders.bind(this));
+        // this.headersBtn.addEventListener('click', this.customHeaders.bind(this));
         this.transformBtn.addEventListener('click', this.transformResponse.bind(this));
         this.errorBtn.addEventListener('click', this.errorHandling.bind(this));
         this.placeHolder.addEventListener('input', this.setPlaceHolder.bind(this));
@@ -43,19 +34,18 @@ class ClickupDiscord {
         if (e.target.value) {
             this.prepend = e.target.value;
         }
-        console.log(this.prepend);
     }
 
     async oAuth2autentication() {
 
         return {
             headers: {
-                'content-type': 'application/json',
                 headers: {
+                    'content-type': 'multipart/form-data',
                     Authorization: `Bearer ${this.base.token}`
                 }
             }
-        }
+        };
     }
 
     initializeForm() {
@@ -104,58 +94,50 @@ class ClickupDiscord {
             method: 'get',
             url: (this.base.url + this.prepend),
             headers: {
-                'Content-Type': 'application/json',
-                'X-Api-Key': this.base.client_id,
-                'Authorization': `Bearer ${this.base.token}`,
-                "Accept": "application/json",
+                'Content-Type': 'application/json'
             }
         };
-        //Cross-Origin Resource Sharing
+
         axios(config)
             .then(response =>
                 this.showToFront(response.data)
             ).catch(function (error) {
             console.log(error);
         });
+
     }
 
     addData(e) {
         e.preventDefault();
 
         const form = new FormData();
+
+        form.append('filename', '')
+        form.append('attachment', fs.createReadStream('./img.png'));
+
         const headers = form.getHeaders();
 
-        headers.authorization = `Bearer ${this.base.token}`;
+        headers.authorization = `Bearer ${your_api_token}`;
 
         axios({
-            method: 'get',
+            method: 'post',
             url: (this.base.url + this.prepend),
+            data: form,
             headers,
         })
-            .then(() => console.log(JSON.stringify(response.data)))
+            .then(() => console.log('success'))
             .catch(() => console.log('fail'));
 
     }
 
     updateData(e) {
-        let today = (new Date().getTime());
-        var config = {
-            url: 'https://api.clickup.com/api/v2/team/2583465/task?&statuses%5B%5D=in progress&due_date_lt=' + today,
-        };
-
-        axios.get(config, this.oAuth2autentication)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
+        e.preventDefault();
+        console.log('Upp Request');
     }
 
     removeData(e) {
         e.preventDefault();
-        console.log(this.base);
+        console.log('Rem  Request');
     }
 
     getGeneralData(e) {
@@ -163,40 +145,14 @@ class ClickupDiscord {
         console.log('GeneralRequest');
     }
 
-    customHeaders(e) {
-        e.preventDefault();
-
-        let config = {
-            method: 'post',
-            url: this.base.url+this.prepend,
-        };
-
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    // customHeaders(e) {
+    //     // e.preventDefault();
+    //     // console.log('Custom Request');
+    // }
 
     transformResponse(e) {
         e.preventDefault();
-        var request = new XMLHttpRequest();
-
-
-        request.open('POST',
-            this.base.url+this.prepend);
-
-        request.onreadystatechange = function () {
-            if (this.readyState === 4) {
-                console.log('Status:', this.status);
-                console.log('Headers:', this.getAllResponseHeaders());
-                console.log('Body:', this.responseText);
-            }
-        };
-
-        request.send();
+        console.log(' Request');
     }
 
     errorHandling(e) {
@@ -236,23 +192,4 @@ class ClickupDiscord {
 `;
     }
 
-//     var myHeaders = new Headers();
-//     myHeaders.append("Authorization", `Bearer ${clickupDiscordAuth}`);
-//
-//     let raw = "";
-//
-//     let options = {
-//         method: 'GET',
-//         headers: myHeaders,
-//         body: raw,
-//         redirect: 'follow'
-//     };
-//
-//     fetch("https://api.clickup.com/api/v2/team", options)
-//      .then(response => response.text())
-//      .then(result => console.log(result))
-//      .catch(error => console.log('error', error));
-
 }
-
-export default ClickupDiscord;

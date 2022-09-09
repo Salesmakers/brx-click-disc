@@ -126,6 +126,7 @@
 //todo add additional hashing for each
 		public function add_new_brx_base_path() {
 
+
 			$data = get_option( 'brx_base', false );
 
 			$newUrl = esc_url( $_POST['url'] );

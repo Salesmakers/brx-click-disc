@@ -18,11 +18,9 @@ class BaseHendler {
     async addNewConnection(e) {
         e.preventDefault();
 
-        let inputFields = [];
         let baseUrl = document.getElementById('newBrxUrl').value;
         let newName = document.getElementById('newBrxApiName').value;
         let values = Array.from(document.querySelectorAll('.newBrx')).map(item => item.value);
-        console.log(values);
 
         try {
             var ourInputForm = {
