@@ -100,23 +100,38 @@ class ClickupDiscord {
     getData(e) {
         e.preventDefault();
 
-        let config = {
-            method: 'get',
-            url: (this.base.url + this.prepend),
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Api-Key': this.base.client_id,
-                'Authorization': `Bearer ${this.base.token}`,
-                "Accept": "application/json",
+        // let config = {
+        //     method: 'get',
+        //     url: (this.base.url + this.prepend),
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'X-Api-Key': this.base.client_id,
+        //         'Authorization': `Bearer ${this.base.token}`,
+        //         "Accept": "application/json",
+        //     }
+        // };
+        // //Cross-Origin Resource Sharing
+        // axios(config)
+        //     .then(response =>
+        //         this.showToFront(response.data)
+        //     ).catch(function (error) {
+        //     console.log(error);
+        // });
+        let data ={}
+        let text ='';
+        const preFix= 'https://app.clickup.com/t/';
+        for(let task of data.tasks){
+            if ((task.due_date !== null) ) {
+
+let assignee =task.assignees[task.assignees.length -1];
+let  assigned_to = assignee.username.toString() ;
+
+
+                text += ` <p>Task : ${task.name} with link: ${preFix+task.id} , asignd to ${assigned_to} due date  ${ task.due_date } that it's still  ${task.status.status.toString()}</p>`;
             }
-        };
-        //Cross-Origin Resource Sharing
-        axios(config)
-            .then(response =>
-                this.showToFront(response.data)
-            ).catch(function (error) {
-            console.log(error);
-        });
+
+        }
+         document.getElementById('result').insertAdjacentHTML('beforeend',text );
     }
 
     addData(e) {
